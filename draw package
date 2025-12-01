@@ -1,22 +1,26 @@
 def draw(self):
         if self.row == 0:
-            if self.x >= 176 and not self.falling:
-                pyxel.blt(self.x, self.y, Package.img, Package.u,
-                          Package.v,
-                          Package.package_width, Package.package_height)
-            if 120 <= self.x <= 136 and not self.falling:
-                pyxel.blt(self.x, self.y, Package.img, Package.u,
-                            Package.v,
-                            Package.package_width, Package.package_height)
-            elif 68 < self.x <= 96 and not self.falling:
-                pyxel.blt(self.x, self.y, Package.img, 51,
-                            21,
-                            Package.package_width, Package.package_height)
-            elif self.falling:
-                pyxel.blt(64, 132, Package.img, 64,
-                            16,
-                            11, 14)
-                pyxel.blt(64, 147, Package.img, 65, 166, 13, 10)
+            if not self.falling:
+                if self.x >= 176:
+                    pyxel.blt(self.x, self.y, Package.img, Package.u,
+                              Package.v,
+                              Package.package_width, Package.package_height)
+                if 120 <= self.x <= 136:
+                    pyxel.blt(self.x, self.y, Package.img, Package.u,
+                                Package.v,
+                                Package.package_width, Package.package_height)
+                elif 68 < self.x <= 96:
+                    pyxel.blt(self.x, self.y, Package.img, 51,
+                                21,
+                                Package.package_width, Package.package_height)
+            else:
+                if self.x < 120:
+                    pyxel.blt(64, 132, Package.img, 64,
+                                16,
+                                11, 14)
+                    pyxel.blt(64, 147, Package.img, 65, 166, 13, 10)
+                elif self.x > 120:
+                    pyxel.blt(164, 134, Package.img, 65, 166, 13, 10)
 
         elif self.row == 1:
             if self.x <= 96 and not self.falling:
