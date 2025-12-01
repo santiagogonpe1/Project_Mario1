@@ -107,39 +107,50 @@ class Package:
 
         self.move_on_belt()
 
+        if self.row == 0:
+            self.mario_row0()
+            if self.falling:
+                return
+
         target_x = Package.max_x[self.row]
         if self.x == target_x:
             self.check_catch_or_fall()
 
     def draw(self):
         if self.row == 0:
-            if self.x >= 176 and not self.falling:
-                pyxel.blt(self.x, self.y, Package.img, Package.u,
-                          Package.v,
-                          Package.package_width, Package.package_height)
-            if 120 <= self.x <= 136 and not self.falling:
-                pyxel.blt(self.x, self.y, Package.img, Package.u,
-                            Package.v,
-                            Package.package_width, Package.package_height)
-            elif 68 < self.x <= 96 and not self.falling:
-                pyxel.blt(self.x, self.y, Package.img, 51,
-                            21,
-                            Package.package_width, Package.package_height)
-            elif self.falling:
-                pyxel.blt(64, 132, Package.img, 64,
-                            16,
-                            11, 14)
-                pyxel.blt(64, 147, Package.img, 65, 166, 13, 10)
+            if not self.falling:
+                if self.x >= 176:
+                    pyxel.blt(self.x, self.y, Package.img, Package.u,
+                              Package.v,
+                              Package.package_width, Package.package_height)
+                if 120 <= self.x <= 136:
+                    pyxel.blt(self.x, self.y, Package.img, Package.u,
+                              Package.v,
+                              Package.package_width, Package.package_height)
+                elif 68 < self.x <= 96:
+                    pyxel.blt(self.x, self.y, Package.img, 51,
+                              21,
+                              Package.package_width, Package.package_height)
+            else:
+                if self.x < 120:
+                    pyxel.blt(64, 132, Package.img, 64,
+                              16,
+                              11, 14)
+                    pyxel.blt(64, 147, Package.img, 65, 166, 13, 10)
+                elif self.x > 120:
+                    pyxel.blt(164, 134, Package.img, 65, 166, 13, 10)
+
+
 
         elif self.row == 1:
             if self.x <= 96 and not self.falling:
                 pyxel.blt(self.x, self.y, Package.img, 51,
-                            21,
-                            Package.package_width, Package.package_height)
+                          21,
+                          Package.package_width, Package.package_height)
             elif 114 < self.x < 144 and not self.falling:
                 pyxel.blt(self.x, self.y, Package.img, 51,
-                            36,
-                            Package.package_width, Package.package_height+1)
+                          36,
+                          Package.package_width, Package.package_height + 1)
             elif self.falling:
                 pyxel.blt(152, 120, Package.img, 64,
                           32,
@@ -148,59 +159,50 @@ class Package:
 
         elif self.row == 2:
             if self.x >= 120 and not self.falling:
-                pyxel.blt(self.x, self.y, Package.img,51,
-                            36,
-                            Package.package_width, Package.package_height+1)
+                pyxel.blt(self.x, self.y, Package.img, 51,
+                          36,
+                          Package.package_width, Package.package_height + 1)
             elif 68 < self.x <= 96 and not self.falling:
                 pyxel.blt(self.x, self.y, Package.img, 51,
-                            52,
-                            Package.package_width, Package.package_height+1)
+                          52,
+                          Package.package_width, Package.package_height + 1)
             elif self.falling:
                 pyxel.blt(64, 132, Package.img, 64,
-                            48,
-                            11, 14)
+                          48,
+                          11, 14)
                 pyxel.blt(64, 147, Package.img, 65, 166, 13, 10)
 
         elif self.row == 3:
             if self.x <= 96 and not self.falling:
                 pyxel.blt(self.x, self.y, Package.img, 51,
-                            52,
-                            Package.package_width, Package.package_height+1)
+                          52,
+                          Package.package_width, Package.package_height + 1)
             elif 114 < self.x < 144 and not self.falling:
                 pyxel.blt(self.x, self.y, Package.img, 51,
-                            68,
-                            Package.package_width,
-                            Package.package_height + 1)
+                          68,
+                          Package.package_width,
+                          Package.package_height + 1)
             elif self.falling:
                 pyxel.blt(152, 120, Package.img, 64,
-                            64,
-                            11, 14)
+                          64,
+                          11, 14)
                 pyxel.blt(152, 134, Package.img, 65, 166, 13, 10)
 
         elif self.row == 4:
             if self.x >= 120 and not self.falling:
-                pyxel.blt(self.x, self.y, Package.img,51,
-                            68,
-                            Package.package_width, Package.package_height+1)
+                pyxel.blt(self.x, self.y, Package.img, 51,
+                          68,
+                          Package.package_width, Package.package_height + 1)
             elif 68 < self.x <= 96 and not self.falling:
                 pyxel.blt(self.x, self.y, Package.img, 51,
-                            84,
-                            Package.package_width, Package.package_height+1)
+                          84,
+                          Package.package_width, Package.package_height + 1)
             elif self.falling:
                 pyxel.blt(64, 132, Package.img, 64,
-                            80,
-                            11, 14)
+                          80,
+                          11, 14)
                 pyxel.blt(64, 147, Package.img, 65, 166, 13, 10)
             elif self.throw:
                 pyxel.blt(36, 64, Package.img, 64,
                           114,
                           11, 14)
-
-
-
-
-
-
-
-
-
