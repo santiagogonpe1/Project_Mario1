@@ -52,6 +52,7 @@ class Mario:
                 pyxel.blt(self.x, self.y,
                     Mario.img, 0, 16,
                     Mario.mario_width, Mario.mario_height)
+
         pyxel.blt(self.x, self.y,
             Mario.img, Mario.u, Mario.v,
             Mario.mario_width, Mario.mario_height)

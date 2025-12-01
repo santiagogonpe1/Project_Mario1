@@ -13,35 +13,44 @@ class Truck:
         self.y= 88
         self.truck= Truck
         self.has_package = False
+        self.num_package = 0
+        self.current_load = 0
+        self.max_capacity = 9
 
-    #def check_package(selfself, package_x, package_y, package_w, package_h):
+    def load_package(self, num_package):
+        self.current_load = min(num_package, self.max_capacity)
+        self.draw()
 
 
     def draw(self):
-        pyxel.blt(self.x, self.y, Truck.img, Truck.u,
-                  Truck.v,
-                  Truck.truck_width, Truck.truck_height)
+        if self.current_load == 0:
+            pyxel.blt(self.x, self.y, Truck.img, Truck.u,
+                      Truck.v,
+                      Truck.truck_width, Truck.truck_height)
+        elif self.current_load == 1:
+            pyxel.blt(self.x, self.y, Truck.img, Truck.u,
+                      Truck.v + 16, Truck.truck_width, Truck.truck_height)
+        elif self.current_load == 2:
+            pyxel.blt(self.x, self.y, Truck.img, Truck.u,
+                      Truck.v + 16*2, Truck.truck_width, Truck.truck_height)
+        elif self.current_load == 3:
+            pyxel.blt(self.x, self.y, Truck.img, Truck.u,
+                      Truck.v + 16*3, Truck.truck_width, Truck.truck_height)
+        elif self.current_load == 4:
+            pyxel.blt(self.x, self.y, Truck.img, Truck.u,
+                      Truck.v + 16*4, Truck.truck_width, Truck.truck_height)
+        elif self.current_load == 5:
+            pyxel.blt(self.x, self.y, Truck.img, Truck.u,
+                      Truck.v + 16*5, Truck.truck_width, Truck.truck_height)
+        elif self.current_load == 6:
+            pyxel.blt(self.x, self.y, Truck.img, Truck.u,
+                      Truck.v + 16*6, Truck.truck_width, Truck.truck_height)
+        elif self.current_load == 7:
+            pyxel.blt(self.x, self.y, Truck.img, Truck.u,
+                      Truck.v + 16*7, Truck.truck_width, Truck.truck_height)
+        elif self.current_load == 8:
+            pyxel.blt(self.x, self.y, Truck.img, Truck.u,
+                      Truck.v + 16*8, Truck.truck_width, Truck.truck_height)
 
-    """Tenemos que haacer este condicional cuando sepamos como meter los 
-    paquetes"""
-    #def image(self, int):
-    #    if package == 0:
-    #        self.image = "Insert image without package"
-    #    elif package == 1:
-    #        self.image = "image2"
-    #    elif package == 2:
-    #        self.image = "image3"
-    #    elif package == 3:
-    #        self.image = "image4"
-    #    elif  package == 4:
-    #        self.image = "image5"
-    #    elif package == 5:
-    #        self.image = "image6"
-    #   elif package == 6:
-    #       self.image = "image7"
-    #    elif package == 7:
-    #        self.image = "image8"
-    #    elif package == 8:
-    #        self.image = "Insert image without package"
 
 

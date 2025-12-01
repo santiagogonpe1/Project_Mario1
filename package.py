@@ -26,7 +26,7 @@ class Package:
     check_characters_y = [116, 95, 90, 63, 64]
     next_x = [80, 136, 80, 136, None]
 
-    def __init__(self,luigi, mario):
+    def __init__(self,luigi, mario, truck):
         self.x = 192
         self.y= 130
         self.luigi = luigi
@@ -35,6 +35,9 @@ class Package:
         self.throw= False
         self.row= 0
         self.frozen = False
+        self.truck = truck
+        self.num_package = 0
+
 
     def mario_row0(self):
         if self.mario.y != 127 and self.x == 174:
@@ -90,6 +93,8 @@ class Package:
                 # Last row reached
                 self.falling = False
                 self.throw = True
+                self.num_package += 1
+                self.truck.load_package(self.num_package)
 
 
     def update(self):

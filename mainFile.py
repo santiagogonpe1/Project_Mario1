@@ -23,9 +23,9 @@ class App:
         self.mario.package = self.package
         self.luigi.package = self.package
 
-        self.max_package_batch = 3
+        self.max_package_batch = 1
         self.batch_count = 0
-        self.spawn_interval = 120
+        self.spawn_interval = 420
         self.wait_time = 0
         self.spawning = True
         self.boss= Boss()
@@ -35,6 +35,9 @@ class App:
         #Connection with the boss
         self.luigi.boss= self.boss
         self.mario.boss= self.boss
+        #Comnnection with Truck
+        self.truck.package = self.package
+
 
         # Freezing parameters
         self.freeze = False
@@ -66,7 +69,7 @@ class App:
                     self.spawn_package()
             else:
                 self.spawning = False
-                self.wait_time = 240
+                self.wait_time = 420
         else:
             if self.wait_time > 0:
                 self.wait_time -= 1
@@ -90,6 +93,7 @@ class App:
             elif package.throw:
                 self.boss.handle_package_resolution(package, is_success=True)
                 package_resolved = True
+                self.spawn_package()
             if not package_resolved:
                 updated_packages.append(package)
 
@@ -108,7 +112,7 @@ class App:
         #self.score.draw()
 
     def spawn_package(self):
-        new_package = Package(self.luigi, self.mario)
+        new_package = Package(self.luigi, self.mario, self.truck)
         self.package.append(new_package)
         self.batch_count += 1
 
