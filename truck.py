@@ -15,12 +15,10 @@ class Truck:
         self.has_package = False
         self.num_package = 0
         self.current_load = 0
-        self.max_capacity = 9
+        self.max_capacity = 8
 
-    def load_package(self, num_package):
-        self.current_load = min(num_package, self.max_capacity)
-        self.draw()
-
+    def load_package(self, new_count):
+        self.current_load = min(new_count, self.max_capacity)
 
     def draw(self):
         if self.current_load == 0:
@@ -32,7 +30,7 @@ class Truck:
                       Truck.v + 16, Truck.truck_width, Truck.truck_height)
         elif self.current_load == 2:
             pyxel.blt(self.x, self.y, Truck.img, Truck.u,
-                      Truck.v + 16*2, Truck.truck_width, Truck.truck_height)
+                      Truck.v + (16*2), Truck.truck_width, Truck.truck_height)
         elif self.current_load == 3:
             pyxel.blt(self.x, self.y, Truck.img, Truck.u,
                       Truck.v + 16*3, Truck.truck_width, Truck.truck_height)

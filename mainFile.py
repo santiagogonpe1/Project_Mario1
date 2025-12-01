@@ -4,6 +4,7 @@
 # Camion aparezca mas lleno cada vez
 
 import pyxel
+import truck
 
 from mario import Mario
 from luigi import Luigi
@@ -23,9 +24,9 @@ class App:
         self.mario.package = self.package
         self.luigi.package = self.package
 
-        self.max_package_batch = 1
+        self.max_package_batch = 3
         self.batch_count = 0
-        self.spawn_interval = 420
+        self.spawn_interval = 60
         self.wait_time = 0
         self.spawning = True
         self.boss= Boss()
@@ -69,7 +70,7 @@ class App:
                     self.spawn_package()
             else:
                 self.spawning = False
-                self.wait_time = 420
+                self.wait_time = 6000
         else:
             if self.wait_time > 0:
                 self.wait_time -= 1
@@ -98,6 +99,7 @@ class App:
                 updated_packages.append(package)
 
         self.package = updated_packages
+
         #self.score.update()
 
     def draw(self):

@@ -93,9 +93,8 @@ class Package:
                 # Last row reached
                 self.falling = False
                 self.throw = True
-                self.num_package += 1
-                self.truck.load_package(self.num_package)
-
+                new_count = self.truck.current_load + 1
+                self.truck.load_package(new_count)
 
     def update(self):
         # This both "if" help to stop the rest of the update since if the
