@@ -9,7 +9,9 @@ class Boss:
     failures_face_width= 16
     failures_face_height= 16
 
-    def __init__(self):
+    def __init__(self, app_instance):
+        # Reference the main app to signal freeze or fail
+        self.app = app_instance
         # Determine the character to punish
         self.boss_luigi= False
         self.boss_mario= False
@@ -17,12 +19,9 @@ class Boss:
         # State when the animation for punishment starts to freeze game
         self.animation_running = False
         self.animation_timer = 0
-        #Game stats
-        self.max_lives = 3
-        self.lives_lost= 0
-        self.packages_thrown = 0
         #Reference for packages
         self.package = []
+        self.packages_thrown = 0
 
     def handle_package_resolution(self, package_obj, is_success):
         """
@@ -30,14 +29,6 @@ class Boss:
         This method updates the lives lost and animation status.
         """
         if not is_success:
-            # Package fell, lose a life
-            # Doing it on main file may be easier
-            #self.lives_lost += 1
-            #if self.lives_lost == self.max_lives:
-            #    self.mainFile.game_over = True
-
-
-
             # Determine which side the package fell to set the door flag
             # Note: We rely on the package's final fall position (x) for this
             if package_obj.x < 100:
@@ -48,11 +39,14 @@ class Boss:
                 self.last_fail = "mario"
                 self.boss_mario = True
                 self.boss_luigi = False
+            # Signal for main to lose a life
+            return True
         else:
             # Package was successfully thrown and keep parameters
             self.packages_thrown += 1
             self.boss_mario = False
             self.boss_luigi = False
+            return False
 
     def start_animation(self):
         """Start punishment animation for 5 seconds"""
