@@ -1,18 +1,5 @@
 import pyxel
-#Idea: poner que el paquete se mueva para un lado mientras sea menor a una
-# coordenada de x, y en el momento que es igual a esa, el paquete
-# desaparece, aparece la animacion de mario/luigi de que lo suben y aparece
-# un paquete en la cadena de arriba. (siempre teniendo en cuenta si
-# mario/luigi estan en la coordenada en la que deben estar para agarrar el
-# paquete y subirlo
 
-#Tambien podemos usar lo del self.truck= True dentro del if del ultimo riel
-# para que cuando llegue a la coordenada final de la cadena se haga true,
-# desapareza de la cadena el paquete y apàrezca en el camion
-
-#Para hacer lo del boss, lo de las vidas y lo de la puerta, podemos usar lo
-# sel self.falling, que cuando sea True, aparezca el bos, se pierda una vida
-# y se abra la puerta
 class Package:
     img=0
     u= 51

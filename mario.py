@@ -34,11 +34,11 @@ class Mario:
     def draw(self):
         package = self.get_falling_package()
 
-        if package and self.boss and self.boss.boss_mario:
+        if self.boss and self.boss.boss_mario and self.boss.animation_running:
             pyxel.blt(200, 96,
                 Mario.img, 0, 128,
                 Mario.mario_width, Mario.mario_height)
-
+        package = self.get_falling_package()
         # CASE 2: Mario reacts to package row
         if package:
             # package in row 1, Mario at middle row

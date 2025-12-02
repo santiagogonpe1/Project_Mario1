@@ -1,10 +1,10 @@
 #To open the sprites: pyxel edit assets/sprites2.pyxres
 
-# Hacer que aparezcan los paquetes automaticamente
-# Camion aparezca mas lleno cada vez
+
+# Arreglar bug de Mario cuando cae paquete y el esta por encima.
+# Comentar codigo
 
 import pyxel
-import truck
 
 from mario import Mario
 from luigi import Luigi

@@ -10,10 +10,12 @@ class Boss:
     failures_face_height= 16
 
     def __init__(self):
+        #self.mainFile = mainFile
         self.boss_luigi= False
         self.boss_mario= False
         self.animation_running = False # If game is in freeze
         self.animation_timer = 0
+        self.max_lives = 3
         self.lives_lost= 0
         self.package = []
         self.packages_thrown = 0
@@ -27,7 +29,12 @@ class Boss:
         """
         if not is_success:
             # Package fell, lose a life
-            self.lives_lost += 1
+            # Doing it on main file may be easier
+            #self.lives_lost += 1
+            #if self.lives_lost == self.max_lives:
+            #    self.mainFile.game_over = True
+
+
 
             # Determine which side the package fell to set the door flag
             # Note: We rely on the package's final fall position (x) for this

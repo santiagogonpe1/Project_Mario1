@@ -32,7 +32,7 @@ class Luigi:
             self.y+=26
     def draw(self):
         package = self.get_falling_package()
-        if package and self.boss and self.boss.boss_luigi:
+        if self.boss and self.boss.boss_luigi and self.boss.animation_running:
             pyxel.blt(24, 128, Luigi.img, 16, 128,Luigi.luigi_width,
                       Luigi.luigi_height )
 
