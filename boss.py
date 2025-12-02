@@ -10,17 +10,19 @@ class Boss:
     failures_face_height= 16
 
     def __init__(self):
-        #self.mainFile = mainFile
+        # Determine the character to punish
         self.boss_luigi= False
         self.boss_mario= False
-        self.animation_running = False # If game is in freeze
+        self.last_fail = None
+        # State when the animation for punishment starts to freeze game
+        self.animation_running = False
         self.animation_timer = 0
+        #Game stats
         self.max_lives = 3
         self.lives_lost= 0
-        self.package = []
         self.packages_thrown = 0
-        self.is_animating = False
-        self.last_fail = None
+        #Reference for packages
+        self.package = []
 
     def handle_package_resolution(self, package_obj, is_success):
         """
@@ -47,16 +49,18 @@ class Boss:
                 self.boss_mario = True
                 self.boss_luigi = False
         else:
-            # Package was successfully thrown
+            # Package was successfully thrown and keep parameters
             self.packages_thrown += 1
             self.boss_mario = False
             self.boss_luigi = False
 
     def start_animation(self):
+        """Start punishment animation for 5 seconds"""
         self.animation_running = True
         self.animation_timer = 300
 
     def end_animation(self):
+        """Resets all parameters when animation ends"""
         self.animation_running = False
         self.boss_mario = False
         self.boss_luigi = False
@@ -71,6 +75,7 @@ class Boss:
             self.end_animation()
 
     def draw(self):
+        """Draws all the boss animation along with door"""
         #Mario door
         if self.boss_mario and self.animation_running:
             pyxel.blt(227, 96, 1, 51, 104, Boss.door_width, Boss.door_height)

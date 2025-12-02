@@ -24,6 +24,8 @@ class Mario:
         return falling[0] if falling else None
 
     def update(self):
+        """Frozen function initialized here to avoid character to move
+                during animation"""
         if self.frozen:
             return
         if pyxel.btnp(pyxel.KEY_UP) and self.y > 65:
@@ -32,6 +34,8 @@ class Mario:
             self.y += 32
 
     def draw(self):
+        """Function to draw the character during gameplay and animated when
+                falling package"""
         package = self.get_falling_package()
 
         if self.boss and self.boss.boss_mario and self.boss.animation_running:
@@ -39,7 +43,7 @@ class Mario:
                 Mario.img, 0, 128,
                 Mario.mario_width, Mario.mario_height)
         package = self.get_falling_package()
-        # CASE 2: Mario reacts to package row
+        # Mario reacts to package row
         if package:
             # package in row 1, Mario at middle row
             if self.y == 95 and package.row == 1:

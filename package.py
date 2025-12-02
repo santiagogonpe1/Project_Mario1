@@ -14,26 +14,30 @@ class Package:
     next_x = [80, 136, 80, 136, None]
 
     def __init__(self,luigi, mario, truck):
+        """Calling the parameters needed to initialize the package"""
         self.x = 192
         self.y= 130
+        # Connection with characters
         self.luigi = luigi
         self.mario= mario
         self.falling= False
         self.throw= False
         self.row= 0
         self.frozen = False
+        #Connection with truck
         self.truck = truck
         self.num_package = 0
 
 
     def mario_row0(self):
+        """Special function for row0, as it acts differently to the rest on
+        the conveyors"""
         if self.mario.y != 127 and self.x == 174:
             self.falling = True
 
     def current_character(self):
-        """ This method will help us to know which
-        character should bt taken into account
-        depending on the row the package is"""
+        """ This method will help us to know which character should be taken
+         into account depending on the row the package is"""
         name = Package.character[self.row]
         if name == "luigi":
             return self.luigi
@@ -80,14 +84,13 @@ class Package:
                 # Last row reached
                 self.falling = False
                 self.throw = True
+                # Truck parameters to change image
                 new_count = self.truck.current_load + 1
                 self.truck.load_package(new_count)
 
     def update(self):
-        # This both "if" help to stop the rest of the update since if the
-        # package is being thrown or falling, the program
-        # does not continue running the rest of the update.
-
+        """Function to update the package unless the image is frozen due to
+        a falling package"""
         if self.frozen or self.throw:
             return
         if self.falling:
@@ -95,7 +98,6 @@ class Package:
             return
         #Used to make sure that y correspond to the current row
         self.y = Package.row_y[self.row]
-
         self.move_on_belt()
 
         if self.row == 0:
@@ -108,6 +110,9 @@ class Package:
             self.check_catch_or_fall()
 
     def draw(self):
+        """Function to draw the packages depending on
+        the row they are (even or odd is a change on the image)"""
+        # Special row 0, with different imaging to the rest
         if self.row == 0:
             if not self.falling:
                 if self.x >= 176:
@@ -132,7 +137,9 @@ class Package:
                     pyxel.blt(164, 134, Package.img, 65, 166, 13, 10)
 
 
-
+        # Rest of the conveyors. Not hard coding as we did not find a way to
+        # make it continuous change in imaging and position without if and
+        # else functions.
         elif self.row == 1:
             if self.x <= 96 and not self.falling:
                 pyxel.blt(self.x, self.y, Package.img, 51,

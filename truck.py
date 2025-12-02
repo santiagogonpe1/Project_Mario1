@@ -9,6 +9,7 @@ class Truck:
     DX = 1
 
     def __init__(self):
+        """Parameters needed to initialize a truck"""
         self.x= 13
         self.y= 88
         self.truck= Truck
@@ -18,9 +19,13 @@ class Truck:
         self.max_capacity = 8
 
     def load_package(self, new_count):
+        """Set a maximum number of possible packages into the truck
+         and a counter for each one of them."""
         self.current_load = min(new_count, self.max_capacity)
 
     def draw(self):
+        """Function to draw the truck, tried to optimize at most the coding,
+         but animation is needed"""
         if self.current_load == 0:
             pyxel.blt(self.x, self.y, Truck.img, Truck.u,
                       Truck.v,
