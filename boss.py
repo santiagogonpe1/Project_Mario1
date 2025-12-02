@@ -87,9 +87,9 @@ class Boss:
                 falling = p
 
         if self.animation_running and self.last_fail:
-            #for luigi
             pyxel.blt(8, 8,1,40,0,Boss.failures_face_width,
                       Boss.failures_face_height)
+            # for luigi
             if self.last_fail == "luigi":
                 if (pyxel.frame_count // 6) % 2 == 0:
                     pyxel.blt(14,130, Boss.img, 35, 3, Boss.boss_width,

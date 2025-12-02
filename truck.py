@@ -14,7 +14,6 @@ class Truck:
         self.y= 88
         self.truck= Truck
         self.has_package = False
-        self.num_package = 0
         self.current_load = 0
         self.max_capacity = 8
 

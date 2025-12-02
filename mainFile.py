@@ -43,6 +43,7 @@ class App:
         # Lives on-game
         self.max_lives = 3
         self.lives_lost = 0
+        self.last_fail = False
         self.game_over = False
 
 
@@ -62,12 +63,16 @@ class App:
 
         #The game is frozen if player misses a package (stop update)
         if self.freeze:
+            #During freeze time, boss still animated
+            self.boss.update()
             if self.freeze_timer > 0:
                 self.freeze_timer -=1
             else:
-                self.unfreeze_game()
-            #During freeze time, boss still animated
-            self.boss.update()
+                if self.last_fail:
+                    self.game_over = True
+                    self.last_fail = False
+                else:
+                    self.unfreeze_game()
             return
 
         #Basic updates for gameplay
@@ -104,10 +109,9 @@ class App:
                 if life_lost:
                     self.lives_lost += 1
                     if self.lives_lost >= self.max_lives:
-                        self.game_over = True
+                        self.last_fail = True
                     #If game is not over, freeze game and start animation
-                    if not self.game_over:
-                        self.freeze_game()
+                    self.freeze_game()
                 package_resolved = True
 
             #Package thrown into the truck: spawn more packages and notify boss
@@ -127,14 +131,23 @@ class App:
         """This function draws all the objects for the game to be playable
         and enjoyable"""
         pyxel.cls(0)
-        #Draw of game over
+        # Draw of game over
         if self.game_over:
             pyxel.bltm(0,0,0,0,256,240,160)
             return
         pyxel.bltm(0,0,0,0,0,240,160)
+        if self.game_over:
+            self.freeze_game()
+            pyxel.bltm(0,0,0,0,256,240,160)
+            return
         self.mario.draw()
         self.luigi.draw()
         self.truck.draw()
+        # Draw crying faces if there is a live lost
+        for crying_faces in range(self.lives_lost):
+            x_position = 8 + (crying_faces * 18)
+            pyxel.blt(x_position, 8, 1, 40, 0, 16,16)
+        # Draw packages
         for package in self.package:
             package.draw()
         self.boss.draw()
@@ -142,6 +155,7 @@ class App:
 
     def reset_game(self):
         """This function resets the game if user press SPACE"""
+        self.last_fail = False
         self.game_over = False
         self.lives_lost = 0
         self.boss.packages_thrown = 0
