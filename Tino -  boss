@@ -1,0 +1,26 @@
+def update(self):
+    # LÓGICA DEL BOSS EN MODO "FALLO"
+    if self.animation_timer > 0:
+        self.animation_timer -= 1
+    else:
+        # solo terminamos animación de fallo
+        # (no toques rest_mode aquí)
+        # pero sí limpiamos si venía de fallo
+        self.end_animation()
+
+    # LÓGICA DEL DESCANSO (CAMIÓN LLENO)
+    if self.rest_mode:
+        if self.rest_timer > 0:
+            self.rest_timer -= 1
+
+            remaining = self.rest_timer
+
+            # cuando queden 60 frames de descanso, se muestra
+            if remaining <= 60:
+                self.animation_running = True
+            else:
+                self.animation_running = False
+        else:
+            # se acabó el descanso controlado por Boss
+            self.rest_mode = False
+            self.animation_running = False
