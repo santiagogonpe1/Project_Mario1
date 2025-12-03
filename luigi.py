@@ -7,50 +7,76 @@ class Luigi:
     v=0
     luigi_width= 16
     luigi_height= 16
-    DX= 1
 
     def __init__(self):
+        #Luigi´s coordinates
         self.x = 54
         self.y = 64
+        #Attribute needed for Luigi to follow the packages behavior
         self.package = []
+        #Attribute needed for Luigi to follow the boss behavior
         self.boss= None
+        #Attribute needed for Luigi to freeze
         self.frozen = False
+        # Attributes needed for Mario to know when a package is caught and in
+        # which row
+        self.catch= False
+        self.catch_row= None
+        #Attribute needed for Luigi to follow the truck behavior
+        self.truck= None
 
-    def get_falling_package(self):
-        """
-        Returns the first falling package, or None if no package is falling.
-        """
-        falling = [p for p in self.package if p.falling]
-        return falling[0] if falling else None
+    def catch_package(self):
+        """Returns True when a package is caught and its row"""
+        caught= False
+        caught_row= None
+        for p in self.package:
+            if self.y == 116 and 64 < p.x < 70:
+                 caught= True
+                 caught_row= 0
+            elif self.y == 90 and 64 < p.x < 70:
+                caught= True
+                caught_row = 2
+            elif self.y == 64 and 64 < p.x < 70:
+                caught= True
+                caught_row = 4
+
+        self.catch= caught
+        self.catch_row= caught_row
 
     def update(self):
         """Frozen function initialized here to avoid character to move
         during animation"""
         if self.frozen:
             return
+
+        self.catch_package()
+
         if pyxel.btnp(pyxel.KEY_W) and self.y > 65:
             self.y-=26
         elif pyxel.btnp(pyxel.KEY_S) and self.y < 115:
             self.y+=26
+
+
     def draw(self):
         """Function to draw the character during gameplay and animated when
-        falling package"""
-        package = self.get_falling_package()
+                a package is caught or when a package is fallen"""
         if self.boss and self.boss.boss_luigi and self.boss.animation_running:
-            pyxel.blt(24, 128, Luigi.img, 16, 128,Luigi.luigi_width,
+            pyxel.blt(26, 124, Luigi.img, 16, 128,Luigi.luigi_width,
                       Luigi.luigi_height )
-        # Luigi reacts to package row
-        if package:
-            # package in row 1, Mario at middle row
-            if self.y == 116 and package.row == 1:
-                pyxel.blt(self.x, self.y, Luigi.img, 16,
-                          16,
-                          Luigi.luigi_width, Luigi.luigi_height)
-            # package in row 3, Mario at top row
-            elif self.y == 90 and package.row == 3:
-                pyxel.blt(self.x, self.y, Luigi.img, 16,
-                          16,
-                          Luigi.luigi_width, Luigi.luigi_height)
 
-        pyxel.blt(self.x, self.y, Luigi.img, Luigi.u, Luigi.v,
-                  Luigi.luigi_width, Luigi.luigi_height)
+        if self.truck.full:
+            pyxel.blt(self.x, self.y,
+                      Luigi.img, Luigi.u, 144,
+                      Luigi.luigi_width, Luigi.luigi_height)
+        else:
+            if self.catch and self.catch_row == 4:
+                pyxel.blt(self.x, self.y, Luigi.img, Luigi.u,
+                            160,
+                            Luigi.luigi_width, Luigi.luigi_height)
+            elif self.catch:
+                pyxel.blt(self.x, self.y, Luigi.img, Luigi.u,
+                            16,
+                             Luigi.luigi_width, Luigi.luigi_height)
+            else:
+                pyxel.blt(self.x, self.y, Luigi.img, Luigi.u, Luigi.v,
+                         Luigi.luigi_width, Luigi.luigi_height)

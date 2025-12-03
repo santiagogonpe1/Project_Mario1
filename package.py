@@ -26,7 +26,6 @@ class Package:
         self.frozen = False
         #Connection with truck
         self.truck = truck
-        self.num_package = 0
 
 
     def mario_row0(self):

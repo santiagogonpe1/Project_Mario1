@@ -1,42 +1,49 @@
 #To open the sprites: pyxel edit assets/sprites2.pyxres
 
+# Revisar que paquetes salgan apenas se inicie el juego
 import pyxel
 
 #Import all game objects
 from mario import Mario
 from luigi import Luigi
 from truck import Truck
+from score import Score
 from package import Package
-#from score import Score
 from boss import Boss
 
 class App:
     def __init__(self):
         """Initialize all attributes"""
-        pyxel.init(240,160)
-        pyxel.load("assets/sprites2.pyxres")
-        self.mario= Mario()
-        self.luigi= Luigi()
-        self.truck= Truck()
-        self.boss = Boss(self)
-        self.package= []
-        #Connection with package and characters
+        pyxel.init(240, 160)
+        pyxel.load("assets/sprites.pyxres")
+        self.mario = Mario()
+        self.luigi = Luigi()
+        self.truck = Truck()
+        self.package = []
+        self.boss = Boss()
+        self.score = Score()
+        # Connection with package and characters
         self.mario.package = self.package
         self.luigi.package = self.package
         # Parameters for package spam
-        self.max_package_batch = 3
+        self.max_package_batch = 1
         self.batch_count = 0
-        self.spawn_interval = 60
+        self.spawn_interval = 200
         self.wait_time = 0
         self.spawning = True
-        #self.score= Score()
-        #Connection with the packages
-        self.boss.package= self.package
-        #Connection with the boss
-        self.luigi.boss= self.boss
-        self.mario.boss= self.boss
-        #Connection with Truck
+        # Connection with the packages
+        self.boss.package = self.package
+        # Connection with the boss
+        self.luigi.boss = self.boss
+        self.mario.boss = self.boss
+        # Connection with the truck
         self.truck.package = self.package
+        self.mario.truck = self.truck
+        self.luigi.truck = self.truck
+        # Connection with the score
+        self.score.mario = self.mario
+        self.score.luigi = self.luigi
+        self.score.truck = self.truck
         # Freezing parameters
         self.freeze = False
         self.freeze_timer = 0
@@ -46,27 +53,27 @@ class App:
         self.last_fail = False
         self.game_over = False
 
-
         pyxel.run(self.update, self.draw)
-
 
     def update(self):
         if pyxel.btnp(pyxel.KEY_Q):
             pyxel.quit()
 
-        #Game over update in game
+        # Game over update in game
         if self.game_over:
             # Allows restart when pressing space
-            if pyxel.btnp(pyxel.KEY_SPACE):
-                self.reset_game()
-            return
+                if pyxel.btnp(pyxel.KEY_R):
+                    self.reset_game()
+                if pyxel.btnp(pyxel.KEY_Q):
+                    pyxel.quit()
+                return
 
-        #The game is frozen if player misses a package (stop update)
+        # The game is frozen if player misses a package (stop update)
         if self.freeze:
-            #During freeze time, boss still animated
+            # During freeze time, boss still animated
             self.boss.update()
             if self.freeze_timer > 0:
-                self.freeze_timer -=1
+                self.freeze_timer -= 1
             else:
                 if self.last_fail:
                     self.game_over = True
@@ -75,10 +82,8 @@ class App:
                     self.unfreeze_game()
             return
 
-        #Basic updates for gameplay
         self.mario.update()
         self.luigi.update()
-
         #Package spawning
         if self.spawning:
             if self.batch_count < self.max_package_batch:
@@ -86,7 +91,7 @@ class App:
                     self.spawn_package()
             else:
                 self.spawning = False
-                self.wait_time = 6000
+                self.wait_time = 300
         else:
             if self.wait_time > 0:
                 self.wait_time -= 1
@@ -98,11 +103,10 @@ class App:
         updated_packages = []
         for package in self.package:
             package.update()
-            # finished to see if the package is ready to be removed and
-            # successful if it was thrown successfully
+            # Boolean variables: finished to see if the package is ready to
+            # be removed and successful if it was thrown successfully
             package_resolved = False
 
-            # If package falls: Boss animation, life lost and freeze gameplay
             if package.falling and package.y > 150:
                 life_lost = self.boss.handle_package_resolution(package,
                                                                 is_success=False)
@@ -110,48 +114,45 @@ class App:
                     self.lives_lost += 1
                     if self.lives_lost >= self.max_lives:
                         self.last_fail = True
-                    #If game is not over, freeze game and start animation
+                    # If game is not over, freeze game and start animation
                     self.freeze_game()
                 package_resolved = True
-
             #Package thrown into the truck: spawn more packages and notify boss
             elif package.throw:
                 self.boss.handle_package_resolution(package, is_success=True)
                 package_resolved = True
-                self.spawn_package()
             # Package still in game
             if not package_resolved:
                 updated_packages.append(package)
 
-        self.package = updated_packages
+        self.package[:] = updated_packages
+        self.truck.update()
+        #The game will be frozen when the truck is full
+        if self.truck.full and not self.freeze:
+            self.freeze_truck()
 
-        #self.score.update()
+        self.score.update()
 
     def draw(self):
-        """This function draws all the objects for the game to be playable
-        and enjoyable"""
         pyxel.cls(0)
+        pyxel.bltm(0,0,0,0,0,240,160)
         # Draw of game over
         if self.game_over:
-            pyxel.bltm(0,0,0,0,256,240,160)
-            return
-        pyxel.bltm(0,0,0,0,0,240,160)
-        if self.game_over:
-            self.freeze_game()
-            pyxel.bltm(0,0,0,0,256,240,160)
+            pyxel.cls(5)
+            pyxel.text(90, 60, "GAME OVER", 7)
+            pyxel.text(80, 90, "R - RESTART", 7)
+            pyxel.text(85, 105, "Q - QUIT", 7)
             return
         self.mario.draw()
         self.luigi.draw()
         self.truck.draw()
-        # Draw crying faces if there is a live lost
         for crying_faces in range(self.lives_lost):
             x_position = 8 + (crying_faces * 18)
-            pyxel.blt(x_position, 8, 1, 40, 0, 16,16)
-        # Draw packages
+            pyxel.blt(x_position, 8, 1, 40, 0, 16, 16)
         for package in self.package:
             package.draw()
         self.boss.draw()
-        #self.score.draw()
+        self.score.draw()
 
     def reset_game(self):
         """This function resets the game if user press SPACE"""
@@ -194,6 +195,22 @@ class App:
         self.batch_count = 0
         self.package.clear()
         self.boss.end_animation()
+        if self.truck.full:
+            self.truck.full = False
+            self.truck.current_load = 0
+
+    def freeze_truck(self):
+        """ This method will help us to then freeze the game when the truck is
+        full"""
+        self.freeze = True
+        self.freeze_timer = 180
+        self.mario.frozen = True
+        self.luigi.frozen = True
+        # freeze packages (assuming Package respects p.frozen)
+        for p in self.package:
+            p.frozen = True
+
+        self.boss.start_rest(self.freeze_timer)
+
 
 App()
-

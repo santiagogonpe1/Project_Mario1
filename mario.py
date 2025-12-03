@@ -6,28 +6,50 @@ class Mario:
     v = 0
     mario_width = 16
     mario_height = 16
-    DX = 1
 
     def __init__(self):
+        #Mario´s coordinates
         self.x = 152
         self.y = 127
-        self.package = []  # NOW A LIST
-        self.boss = None       # boss may be None if not used
+        #Attribute needed for Mario to follow the packages behavior
+        self.package = []
+        #Attribute needed for Mario to follow the boss behavior
+        self.boss = None
+        #Attribute needed for Mario to freeze
         self.frozen = False
+        #Attributes needed for Mario to know when a package is caught and in
+        #which row
+        self.catch= False
+        self.catch_row= None
+        #Attribute needed for Mario to follow the truck behavior
+        self.truck= None
 
-    def get_falling_package(self):
-        """
-        Returns the first package that is currently falling.
-        If none are falling, returns None.
-        """
-        falling = [p for p in self.package if p.falling]
-        return falling[0] if falling else None
+    def catch_package(self):
+        """Returns True when a package is caught and its row"""
+        caught = False
+        caught_row = None
+        for p in self.package:
+            if self.y == 127 and 170 < p.x < 176:
+                caught = True
+                caught_row = 0
+            elif self.y == 95 and 145 < p.x < 151:
+                caught = True
+                caught_row = 1
+            elif self.y == 63 and 145 < p.x < 151:
+                caught = True
+                caught_row = 3
+
+        self.catch = caught
+        self.catch_row = caught_row
 
     def update(self):
         """Frozen function initialized here to avoid character to move
-                during animation"""
+        during animation"""
         if self.frozen:
             return
+
+        self.catch_package()
+
         if pyxel.btnp(pyxel.KEY_UP) and self.y > 65:
             self.y -= 32
         elif pyxel.btnp(pyxel.KEY_DOWN) and self.y < 127:
@@ -35,28 +57,26 @@ class Mario:
 
     def draw(self):
         """Function to draw the character during gameplay and animated when
-                falling package"""
-        package = self.get_falling_package()
-
+        a package is caught or when a package is fallen"""
         if self.boss and self.boss.boss_mario and self.boss.animation_running:
-            pyxel.blt(200, 96,
-                Mario.img, 0, 128,
-                Mario.mario_width, Mario.mario_height)
-        package = self.get_falling_package()
-        # Mario reacts to package row
-        if package:
-            # package in row 1, Mario at middle row
-            if self.y == 95 and package.row == 1:
-                pyxel.blt(self.x, self.y,
-                    Mario.img, 0, 16,
-                    Mario.mario_width, Mario.mario_height)
+            pyxel.blt(192, 96,
+                      Mario.img, Mario.u, 128,
+                      Mario.mario_width, Mario.mario_height)
 
-            # package in row 3, Mario at top row
-            elif self.y == 63 and package.row == 3:
+        if self.truck.full:
+            pyxel.blt(self.x, self.y,
+                      Mario.img, Mario.u, 144,
+                      Mario.mario_width, Mario.mario_height)
+        else:
+            if self.catch and self.catch_row == 0:
                 pyxel.blt(self.x, self.y,
-                    Mario.img, 0, 16,
-                    Mario.mario_width, Mario.mario_height)
-
-        pyxel.blt(self.x, self.y,
-            Mario.img, Mario.u, Mario.v,
-            Mario.mario_width, Mario.mario_height)
+                          Mario.img, Mario.u, 160,
+                          Mario.mario_width, Mario.mario_height)
+            elif self.catch:
+                pyxel.blt(self.x, self.y,
+                          Mario.img, Mario.u, 16,
+                          Mario.mario_width, Mario.mario_height)
+            else:
+                pyxel.blt(self.x, self.y,
+                          Mario.img, Mario.u, Mario.v,
+                          Mario.mario_width, Mario.mario_height)

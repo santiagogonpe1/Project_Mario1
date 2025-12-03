@@ -9,9 +9,9 @@ class Boss:
     failures_face_width= 16
     failures_face_height= 16
 
-    def __init__(self, app_instance):
+    def __init__(self):
         # Reference the main app to signal freeze or fail
-        self.app = app_instance
+        #self.app = app_instance
         # Determine the character to punish
         self.boss_luigi= False
         self.boss_mario= False
@@ -22,6 +22,10 @@ class Boss:
         #Reference for packages
         self.package = []
         self.packages_thrown = 0
+        self.is_animating = False
+        self.rest_mode = False
+        self.rest_timer = 0
+        self.rest_total = 0
 
     def handle_package_resolution(self, package_obj, is_success):
         """
@@ -42,7 +46,7 @@ class Boss:
             # Signal for main to lose a life
             return True
         else:
-            # Package was successfully thrown and keep parameters
+            # Package was successfully thrown
             self.packages_thrown += 1
             self.boss_mario = False
             self.boss_luigi = False
@@ -54,12 +58,27 @@ class Boss:
         self.animation_timer = 300
 
     def end_animation(self):
-        """Resets all parameters when animation ends"""
+        """Handles state changes and time decrements."""
         self.animation_running = False
         self.boss_mario = False
         self.boss_luigi = False
         self.animation_timer = 0
         self.last_fail = None
+
+    def start_rest(self, duration):
+        """
+        Called by App when Mario and Luigi go to rest
+        The boss will appear at the end of this rest period.
+        """
+        self.rest_mode = True
+        self.rest_total = duration
+        self.rest_timer = duration
+
+        # In rest mode, we don't want to use the previous punishment animation.
+        self.animation_running = False
+        self.last_fail = None
+        self.boss_mario = False
+        self.boss_luigi = False
 
     def update(self):
         """Handles state changes and time decrements."""
@@ -67,6 +86,22 @@ class Boss:
             self.animation_timer -= 1
         else:
             self.end_animation()
+
+        if self.rest_mode:
+            if self.rest_timer > 0:
+                self.rest_timer -= 1
+
+                remaining = self.rest_timer
+
+                # cuando queden 60 frames de descanso, se muestra
+                if remaining <= 60:
+                    self.animation_running = True
+                else:
+                    self.animation_running = False
+            else:
+                # se acabó el descanso controlado por Boss
+                self.rest_mode = False
+                self.animation_running = False
 
     def draw(self):
         """Draws all the boss animation along with door"""
@@ -81,15 +116,10 @@ class Boss:
         else:
             pyxel.blt(3,128,1,35,88,Boss.door_width, Boss.door_height)
 
-        falling = None
-        for p in self.package:
-            if p.falling:
-                falling = p
-
         if self.animation_running and self.last_fail:
+            #for luigi
             pyxel.blt(8, 8,1,40,0,Boss.failures_face_width,
                       Boss.failures_face_height)
-            # for luigi
             if self.last_fail == "luigi":
                 if (pyxel.frame_count // 6) % 2 == 0:
                     pyxel.blt(14,130, Boss.img, 35, 3, Boss.boss_width,
@@ -105,10 +135,11 @@ class Boss:
                 else:
                     pyxel.blt(212, 98, Boss.img, 33, 50, Boss.boss_width,
                               Boss.boss_height)
-            elif falling.x == 174:
-                if (pyxel.frame_count // 6) % 2 == 0:
-                    pyxel.blt(212, 98, Boss.img, 33, 35, Boss.boss_width,
-                              Boss.boss_height)
-                else:
-                    pyxel.blt(212, 98, Boss.img, 33, 50, Boss.boss_width,
-                              Boss.boss_height)
+
+        elif self.rest_mode and self.animation_running:
+            if (pyxel.frame_count // 6) % 2 == 0:
+                pyxel.blt(212, 98, Boss.img, 33, 35,
+                          Boss.boss_width, Boss.boss_height)
+            else:
+                pyxel.blt(212, 98, Boss.img, 33, 50,
+                          Boss.boss_width, Boss.boss_height)
