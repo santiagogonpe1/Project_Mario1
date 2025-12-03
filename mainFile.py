@@ -1,6 +1,10 @@
 #To open the sprites: pyxel edit assets/sprites2.pyxres
 
-# Revisar que paquetes salgan apenas se inicie el juego
+# Juntar codigo y dejar juego listo
+# Revisar score de luigi
+# Privado y publico de Luigi, Mario, Package, Truck
+# Documentacion
+
 import pyxel
 
 #Import all game objects
@@ -52,14 +56,19 @@ class App:
         self.lives_lost = 0
         self.last_fail = False
         self.game_over = False
+        self.game_start= False
 
         pyxel.run(self.update, self.draw)
 
     def update(self):
         if pyxel.btnp(pyxel.KEY_Q):
             pyxel.quit()
-
-        # Game over update in game
+        #Start game update in game
+        if not self.game_start:
+            if pyxel.btnp(pyxel.KEY_RETURN):
+                self.game_start = True
+            return
+        #Game over updated in game
         if self.game_over:
             # Allows restart when pressing space
                 if pyxel.btnp(pyxel.KEY_R):
@@ -136,6 +145,23 @@ class App:
     def draw(self):
         pyxel.cls(0)
         pyxel.bltm(0,0,0,0,0,240,160)
+
+        #Draw the game start
+        if not self.game_start:
+            pyxel.cls(5)
+            pyxel.text(80, 30, "SUPER MARIO BROS", 7)
+            if (pyxel.frame_count // 8) % 2 == 0:
+                pyxel.text(75, 45, "Press return to start", 7)
+            else:
+                pyxel.text(75, 45, "Press return to start", 5)
+            pyxel.text(20, 85, "Luigi:", 7)
+            pyxel.text(20, 95, "W -> UP", 7)
+            pyxel.text(20, 105, "S -> DOWN", 7)
+            pyxel.text(160, 85, "Mario:", 7)
+            pyxel.text(160, 95, " Up Arrow -> UP", 7)
+            pyxel.text(160, 105, "Down Arrow -> DOWN", 7)
+            return
+
         # Draw of game over
         if self.game_over:
             pyxel.cls(5)
