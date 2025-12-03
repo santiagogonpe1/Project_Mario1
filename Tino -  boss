@@ -1,3 +1,9 @@
+#Poner esto en app
+
+self.boss.start_rest(self.freeze_timer)  # o un número fijo, tipo 180
+
+
+
 def update(self):
     # LÓGICA DEL BOSS EN MODO "FALLO"
     if self.animation_timer > 0:
@@ -24,3 +30,46 @@ def update(self):
             # se acabó el descanso controlado por Boss
             self.rest_mode = False
             self.animation_running = False
+def draw(self):
+    # Puerta de Mario
+    if self.boss_mario and self.animation_running:
+        pyxel.blt(227, 96, 1, 51, 104, Boss.door_width, Boss.door_height)
+    else:
+        pyxel.blt(227, 96, 1, 16, 104, Boss.door_width, Boss.door_height)
+
+    # Puerta de Luigi
+    if self.boss_luigi and self.animation_running:
+        pyxel.blt(3, 128, 1, 35, 104, Boss.door_width, Boss.door_height)
+    else:
+        pyxel.blt(3, 128, 1, 35, 88, Boss.door_width, Boss.door_height)
+
+    # Si estamos en animación de FALLO (last_fail tiene valor)
+    if self.animation_running and self.last_fail:
+        pyxel.blt(8, 8, 1, 40, 0,
+                  Boss.failures_face_width, Boss.failures_face_height)
+
+        if self.last_fail == "luigi":
+            if (pyxel.frame_count // 6) % 2 == 0:
+                pyxel.blt(14, 130, Boss.img, 35, 3,
+                          Boss.boss_width, Boss.boss_height)
+            else:
+                pyxel.blt(14, 130, Boss.img, 35, 18,
+                          Boss.boss_width, Boss.boss_height)
+
+        elif self.last_fail == "mario":
+            if (pyxel.frame_count // 6) % 2 == 0:
+                pyxel.blt(212, 98, Boss.img, 33, 35,
+                          Boss.boss_width, Boss.boss_height)
+            else:
+                pyxel.blt(212, 98, Boss.img, 33, 50,
+                          Boss.boss_width, Boss.boss_height)
+
+    # Si estamos en modo DESCANSO (rest_mode) y animation_running True
+    elif self.rest_mode and self.animation_running:
+        # aquí dibujás al boss en el lugar que quieras para el descanso
+        if (pyxel.frame_count // 6) % 2 == 0:
+            pyxel.blt(212, 98, Boss.img, 33, 35,
+                      Boss.boss_width, Boss.boss_height)
+        else:
+            pyxel.blt(212, 98, Boss.img, 33, 50,
+                      Boss.boss_width, Boss.boss_height)
