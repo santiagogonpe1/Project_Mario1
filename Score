@@ -6,7 +6,7 @@ class Score:
     img= 1
     u= 34
     score_width= 4
-    score_height= 7
+    score_height= 8
 
 
     def __init__(self):
@@ -23,6 +23,8 @@ class Score:
 
 
     def update(self):
+        """This method will update the points when mario or luigi catch a
+        package or when the truck is full"""
         if self.mario.catch and not self.last_catch_mario:
             self.points+= 1
         if self.luigi.catch and not self.last_catch_luigi:
@@ -32,7 +34,7 @@ class Score:
         self.last_catch_mario = self.mario.catch
         self.last_catch_luigi = self.luigi.catch
 
-        if self.truck.full and self.last_truck_full:
+        if self.truck.full and not self.last_truck_full:
             self.points+= 10
 
         self.last_truck_full = self.truck.full
@@ -47,7 +49,10 @@ class Score:
         self.num2= num2
         self.num1= num1
 
+
     def draw(self):
+        """This method draws the score and uses the attributes of self.num
+        to change the "v" of each number when a point is added"""
         self.show_score()
 
         pyxel.blt(Score.x, Score.y, Score.img, Score.u, self.num3 *
