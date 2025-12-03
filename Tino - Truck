@@ -1,0 +1,121 @@
+import pyxel
+
+class Truck:
+    img = 0
+    u = 80
+    v = 0
+    truck_width = 32
+    truck_height = 16
+    driver_x= 10
+    driver_y= 90
+    driver_img= 1
+    driver_u= 57
+    driver_v= 24
+    driver_width= 6
+    driver_height= 5
+    smoke_x= 24
+    smoke_y= 95
+    smoke_img= 1
+    smoke_u= 56
+    smoke_v= 0
+    smoke_width= 10
+    smoke_height= 8
+
+
+    def __init__(self):
+        #Truck´s coordinates
+        self.x= 9
+        self.y= 88
+        #Connection with the characters
+        self.package= []
+        self.has_package = False
+        #Attributes needed to fill the truck
+        self.current_load= 0
+        self.max_capacity= 8
+        self.leave= False
+        self.full= False
+        #Attribute needed to animate the truck´s smoke
+        self.smoke_timer= 0
+
+    def load_package(self,new_count):
+        """This method sets a maximum number of possible packages into the
+        truck and a counter for each one of them"""
+        self.current_load = min(new_count, self.max_capacity)
+
+    #def leave_truck(self):
+        #if self.current_load == 8:
+           #self.leave= True
+
+    def update(self):
+        #If it was not full but now it is
+        if not self.full and self.current_load >= self.max_capacity:
+            self.full= True
+            self.smoke_timer= 30
+        if self.full:
+            if self.smoke_timer > 0:
+                self.smoke_timer -= 1
+            else:
+                self.x+= 500
+                self.current_load = 0
+                self.full = False
+
+    def draw(self):
+        """Function to draw the truck, tried to optimize at most the coding,
+        but animation is needed"""
+        if self.current_load == 0:
+            pyxel.blt(self.x, self.y, Truck.img, Truck.u,
+                        Truck.v,
+                        Truck.truck_width, Truck.truck_height)
+        elif self.current_load == 1:
+            pyxel.blt(self.x, self.y, Truck.img, Truck.u,
+                        Truck.v + 16*1,
+                        Truck.truck_width, Truck.truck_height)
+        elif self.current_load == 2:
+            pyxel.blt(self.x, self.y, Truck.img, Truck.u,
+                        Truck.v + 16*2,
+                        Truck.truck_width, Truck.truck_height)
+        elif self.current_load == 3:
+            pyxel.blt(self.x, self.y, Truck.img, Truck.u,
+                        Truck.v + 16*3,
+                        Truck.truck_width, Truck.truck_height)
+        elif self.current_load == 4:
+            pyxel.blt(self.x, self.y, Truck.img, Truck.u,
+                        Truck.v + 16*4,
+                        Truck.truck_width, Truck.truck_height)
+        elif self.current_load == 5:
+            pyxel.blt(self.x, self.y, Truck.img, Truck.u,
+                        Truck.v + 16*5,
+                        Truck.truck_width, Truck.truck_height)
+        elif self.current_load == 6:
+            pyxel.blt(self.x, self.y, Truck.img, Truck.u,
+                        Truck.v + 16*6,
+                        Truck.truck_width, Truck.truck_height)
+            if (pyxel.frame_count // 6) % 2 == 0:
+                pyxel.blt(Truck.driver_x, Truck.driver_y, Truck.driver_img,
+                          Truck.driver_u, Truck.driver_v,
+                          Truck.driver_width,Truck.driver_height)
+            else:
+                pyxel.blt(Truck.driver_x, Truck.driver_y, Truck.driver_img,
+                          Truck.driver_u, Truck.driver_v + 8,
+                          Truck.driver_width, Truck.driver_height)
+        elif self.current_load == 7:
+            pyxel.blt(self.x, self.y, Truck.img, Truck.u,
+                        Truck.v + 16*7,
+                        Truck.truck_width, Truck.truck_height)
+            if (pyxel.frame_count // 6) % 2 == 0:
+                pyxel.blt(Truck.driver_x, Truck.driver_y, Truck.driver_img,
+                          Truck.driver_u, Truck.driver_v,
+                          Truck.driver_width,Truck.driver_height)
+            else:
+                pyxel.blt(Truck.driver_x, Truck.driver_y, Truck.driver_img,
+                          Truck.driver_u, Truck.driver_v + 8,
+                          Truck.driver_width, Truck.driver_height)
+        elif self.current_load == 8:
+            if (pyxel.frame_count // 6) % 2 == 0:
+                pyxel.blt(Truck.smoke_x, Truck.smoke_y, Truck.smoke_img,
+                          Truck.smoke_u, Truck.smoke_v,
+                          Truck.smoke_width,Truck.smoke_height)
+            else:
+                pyxel.blt(Truck.smoke_x, Truck.smoke_y, Truck.smoke_img,
+                          Truck.smoke_u, Truck.smoke_v + 8,
+                          Truck.smoke_width, Truck.smoke_height)
