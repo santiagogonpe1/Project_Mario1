@@ -1,7 +1,5 @@
 #To open the sprites: pyxel edit assets/sprites.pyxres
 
-#The boss appears when mario and luigi rest
-#Score
 import pyxel
 
 #Import all game objects
@@ -61,19 +59,33 @@ class App:
     def update(self):
         if pyxel.btnp(pyxel.KEY_Q):
             pyxel.quit()
-        # For the timer to work, boss must be updating at all times
-        self.boss.update()
 
+        # Game over update in game
+        if self.game_over:
+            # Allows restart when pressing space
+                if pyxel.btnp(pyxel.KEY_R):
+                    self.reset_game()
+                if pyxel.btnp(pyxel.KEY_Q):
+                    pyxel.quit()
+                return
+
+        # The game is frozen if player misses a package (stop update)
         if self.freeze:
-            if self.freeze_timer > 0:
-                self.freeze_timer -=1
-            else:
-                self.unfreeze_game()
+            # During freeze time, boss still animated
             self.boss.update()
+            if self.freeze_timer > 0:
+                self.freeze_timer -= 1
+            else:
+                if self.last_fail:
+                    self.game_over = True
+                    self.last_fail = False
+                else:
+                    self.unfreeze_game()
             return
 
         self.mario.update()
         self.luigi.update()
+        #Package spawning
         if self.spawning:
             if self.batch_count < self.max_package_batch:
                 if pyxel.frame_count % self.spawn_interval == 0:
@@ -88,22 +100,29 @@ class App:
                 self.spawning = True
                 self.batch_count = 0
 
+        #Package management loop
         updated_packages = []
         for package in self.package:
             package.update()
-
             # Boolean variables: finished to see if the package is ready to
             # be removed and successful if it was thrown successfully
-
             package_resolved = False
 
             if package.falling and package.y > 150:
-                self.boss.handle_package_resolution(package, is_success=False)
-                self.freeze_game()
+                life_lost = self.boss.handle_package_resolution(package,
+                                                                is_success=False)
+                if life_lost:
+                    self.lives_lost += 1
+                    if self.lives_lost >= self.max_lives:
+                        self.last_fail = True
+                    # If game is not over, freeze game and start animation
+                    self.freeze_game()
                 package_resolved = True
+            #Package thrown into the truck: spawn more packages and notify boss
             elif package.throw:
                 self.boss.handle_package_resolution(package, is_success=True)
                 package_resolved = True
+            # Package still in game
             if not package_resolved:
                 updated_packages.append(package)
 
@@ -118,20 +137,41 @@ class App:
     def draw(self):
         pyxel.cls(0)
         pyxel.bltm(0,0,0,0,0,240,160)
+        # Draw of game over
+        if self.game_over:
+            pyxel.cls(5)
+            pyxel.text(90, 60, "GAME OVER", 7)
+            pyxel.text(80, 90, "R - RESTART", 7)
+            pyxel.text(85, 105, "Q - QUIT", 7)
+            return
         self.mario.draw()
         self.luigi.draw()
         self.truck.draw()
+        for crying_faces in range(self.lives_lost):
+            x_position = 8 + (crying_faces * 18)
+            pyxel.blt(x_position, 8, 1, 40, 0, 16, 16)
         for package in self.package:
             package.draw()
         self.boss.draw()
         self.score.draw()
 
+    def reset_game(self):
+        """This function resets the game if user press SPACE"""
+        self.last_fail = False
+        self.game_over = False
+        self.lives_lost = 0
+        self.boss.packages_thrown = 0
+        self.truck.current_load = 0
+        self.unfreeze_game()
+
     def spawn_package(self):
+        """Creates the package and ands it to the list of package"""
         new_package = Package(self.luigi, self.mario, self.truck)
         self.package.append(new_package)
         self.batch_count += 1
 
     def freeze_game(self):
+        """Pauses the gameplay, setting up the boss animation"""
         self.freeze = True
         self.freeze_timer = 180
         self.mario.frozen = True
@@ -146,6 +186,7 @@ class App:
         self.boss.start_animation()
 
     def unfreeze_game(self):
+        """Resets the gameplay after the boss animation"""
         self.freeze = False
         self.mario.frozen = False
         self.luigi.frozen = False
@@ -168,6 +209,8 @@ class App:
         # freeze packages (assuming Package respects p.frozen)
         for p in self.package:
             p.frozen = True
+
+        self.boss.start_rest(self.freeze_timer)
 
 
 App()
