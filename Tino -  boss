@@ -1,75 +1,145 @@
-#Poner esto en app
+import pyxel
 
-self.boss.start_rest(self.freeze_timer)  # o un número fijo, tipo 180
+class Boss:
+    img= 0
+    boss_width= 12
+    boss_height= 14
+    door_width= 10
+    door_height= 16
+    failures_face_width= 16
+    failures_face_height= 16
 
+    def __init__(self):
+        # Reference the main app to signal freeze or fail
+        #self.app = app_instance
+        # Determine the character to punish
+        self.boss_luigi= False
+        self.boss_mario= False
+        self.last_fail = None
+        # State when the animation for punishment starts to freeze game
+        self.animation_running = False
+        self.animation_timer = 0
+        #Reference for packages
+        self.package = []
+        self.packages_thrown = 0
+        self.is_animating = False
+        self.rest_mode = False
+        self.rest_timer = 0
+        self.rest_total = 0
 
-
-def update(self):
-    # LÓGICA DEL BOSS EN MODO "FALLO"
-    if self.animation_timer > 0:
-        self.animation_timer -= 1
-    else:
-        # solo terminamos animación de fallo
-        # (no toques rest_mode aquí)
-        # pero sí limpiamos si venía de fallo
-        self.end_animation()
-
-    # LÓGICA DEL DESCANSO (CAMIÓN LLENO)
-    if self.rest_mode:
-        if self.rest_timer > 0:
-            self.rest_timer -= 1
-
-            remaining = self.rest_timer
-
-            # cuando queden 60 frames de descanso, se muestra
-            if remaining <= 60:
-                self.animation_running = True
-            else:
-                self.animation_running = False
+    def handle_package_resolution(self, package_obj, is_success):
+        """
+        Called by App when a single package is completed (thrown or fallen).
+        This method updates the lives lost and animation status.
+        """
+        if not is_success:
+            # Determine which side the package fell to set the door flag
+            # Note: We rely on the package's final fall position (x) for this
+            if package_obj.x < 100:
+                self.last_fail = "luigi"
+                self.boss_luigi = True
+                self.boss_mario = False
+            elif package_obj.x > 100:
+                self.last_fail = "mario"
+                self.boss_mario = True
+                self.boss_luigi = False
+            # Signal for main to lose a life
+            return True
         else:
-            # se acabó el descanso controlado por Boss
-            self.rest_mode = False
-            self.animation_running = False
-def draw(self):
-    # Puerta de Mario
-    if self.boss_mario and self.animation_running:
-        pyxel.blt(227, 96, 1, 51, 104, Boss.door_width, Boss.door_height)
-    else:
-        pyxel.blt(227, 96, 1, 16, 104, Boss.door_width, Boss.door_height)
+            # Package was successfully thrown
+            self.packages_thrown += 1
+            self.boss_mario = False
+            self.boss_luigi = False
+            return False
 
-    # Puerta de Luigi
-    if self.boss_luigi and self.animation_running:
-        pyxel.blt(3, 128, 1, 35, 104, Boss.door_width, Boss.door_height)
-    else:
-        pyxel.blt(3, 128, 1, 35, 88, Boss.door_width, Boss.door_height)
+    def start_animation(self):
+        """Start punishment animation for 5 seconds"""
+        self.animation_running = True
+        self.animation_timer = 300
 
-    # Si estamos en animación de FALLO (last_fail tiene valor)
-    if self.animation_running and self.last_fail:
-        pyxel.blt(8, 8, 1, 40, 0,
-                  Boss.failures_face_width, Boss.failures_face_height)
+    def end_animation(self):
+        """Handles state changes and time decrements."""
+        self.animation_running = False
+        self.boss_mario = False
+        self.boss_luigi = False
+        self.animation_timer = 0
+        self.last_fail = None
 
-        if self.last_fail == "luigi":
-            if (pyxel.frame_count // 6) % 2 == 0:
-                pyxel.blt(14, 130, Boss.img, 35, 3,
-                          Boss.boss_width, Boss.boss_height)
+    def start_rest(self, duration):
+        """
+        Called by App when Mario and Luigi go to rest
+        The boss will appear at the end of this rest period.
+        """
+        self.rest_mode = True
+        self.rest_total = duration
+        self.rest_timer = duration
+
+        # In rest mode, we don't want to use the previous punishment animation.
+        self.animation_running = False
+        self.last_fail = None
+        self.boss_mario = False
+        self.boss_luigi = False
+
+    def update(self):
+        """Handles state changes and time decrements."""
+        if self.animation_timer > 0:
+            self.animation_timer -= 1
+        else:
+            self.end_animation()
+
+        if self.rest_mode:
+            if self.rest_timer > 0:
+                self.rest_timer -= 1
+
+                remaining = self.rest_timer
+
+                # cuando queden 60 frames de descanso, se muestra
+                if remaining <= 60:
+                    self.animation_running = True
+                else:
+                    self.animation_running = False
             else:
-                pyxel.blt(14, 130, Boss.img, 35, 18,
-                          Boss.boss_width, Boss.boss_height)
+                # se acabó el descanso controlado por Boss
+                self.rest_mode = False
+                self.animation_running = False
 
-        elif self.last_fail == "mario":
+    def draw(self):
+        """Draws all the boss animation along with door"""
+        #Mario door
+        if self.boss_mario and self.animation_running:
+            pyxel.blt(227, 96, 1, 51, 104, Boss.door_width, Boss.door_height)
+        else:
+            pyxel.blt(227,96,1,16,104,Boss.door_width,Boss.door_height)
+        #Luigi door
+        if self.boss_luigi and self.animation_running:
+            pyxel.blt(3, 128, 1, 35, 104, Boss.door_width, Boss.door_height)
+        else:
+            pyxel.blt(3,128,1,35,88,Boss.door_width, Boss.door_height)
+
+        if self.animation_running and self.last_fail:
+            #for luigi
+            pyxel.blt(8, 8,1,40,0,Boss.failures_face_width,
+                      Boss.failures_face_height)
+            if self.last_fail == "luigi":
+                if (pyxel.frame_count // 6) % 2 == 0:
+                    pyxel.blt(14,130, Boss.img, 35, 3, Boss.boss_width,
+                              Boss.boss_height)
+                else:
+                    pyxel.blt(14, 130, Boss.img, 35, 18, Boss.boss_width,
+                              Boss.boss_height)
+            #for mario
+            elif self.last_fail == "mario":
+                if (pyxel.frame_count // 6) % 2 == 0:
+                    pyxel.blt(212, 98, Boss.img, 33, 35, Boss.boss_width,
+                              Boss.boss_height)
+                else:
+                    pyxel.blt(212, 98, Boss.img, 33, 50, Boss.boss_width,
+                              Boss.boss_height)
+
+        elif self.rest_mode and self.animation_running:
             if (pyxel.frame_count // 6) % 2 == 0:
                 pyxel.blt(212, 98, Boss.img, 33, 35,
                           Boss.boss_width, Boss.boss_height)
             else:
                 pyxel.blt(212, 98, Boss.img, 33, 50,
                           Boss.boss_width, Boss.boss_height)
-
-    # Si estamos en modo DESCANSO (rest_mode) y animation_running True
-    elif self.rest_mode and self.animation_running:
-        # aquí dibujás al boss en el lugar que quieras para el descanso
-        if (pyxel.frame_count // 6) % 2 == 0:
-            pyxel.blt(212, 98, Boss.img, 33, 35,
-                      Boss.boss_width, Boss.boss_height)
-        else:
-            pyxel.blt(212, 98, Boss.img, 33, 50,
-                      Boss.boss_width, Boss.boss_height)
