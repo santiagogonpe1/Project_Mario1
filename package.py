@@ -15,19 +15,87 @@ class Package:
 
     def __init__(self,luigi, mario, truck):
         """Calling the parameters needed to initialize the package"""
-        self.x = 192
-        self.y= 130
+        self.__x = 192
+        self.__y= 130
         # Connection with characters
-        self.luigi = luigi
-        self.mario= mario
-        self.falling= False
-        self.throw= False
-        self.row= 0
-        self.frozen = False
+        self.__luigi = luigi
+        self.__mario= mario
+        self.__falling= False
+        self.__throw= False
+        self.__row= 0
+        self.__frozen = False
         #Connection with truck
-        self.truck = truck
+        self.__truck = truck
 
+    # Coordinates x and y
+    @property
+    def x(self):
+        return self.__x
+    @x.setter
+    def x(self, value):
+        if isinstance(value, (int, float)):
+            self.__x = value
+    @property
+    def y(self):
+        return self.__y
+    @y.setter
+    def y(self, value):
+        if isinstance(value, (int, float)):
+            self.__y = value
 
+    # State of game
+    @property
+    def falling(self):
+        return self.__falling
+    @falling.setter
+    def falling(self, value):
+        if isinstance(value, bool):
+            self.__falling = value
+    @property
+    def throw(self):
+        return self.__throw
+    @throw.setter
+    def throw(self, value):
+        if isinstance(value, bool):
+            self.__throw = value
+    @property
+    def frozen(self):
+        return self.__frozen
+    @frozen.setter
+    def frozen(self, value):
+        if isinstance(value, bool):
+            self.__frozen = value
+    @property
+    def row(self):
+        return self.__row
+    @row.setter
+    def row(self, value):
+        if not isinstance(0 <= value <= 4, int):
+            raise TypeError("Row must be integer between 0 and 4")
+        else:
+            self.__row = value
+
+    # References to other classes
+    @property
+    def mario(self):
+        return self.__mario
+    @mario.setter
+    def mario(self, value):
+        self.__mario = value
+    @property
+    def luigi(self):
+        return self.__luigi
+    @luigi.setter
+    def luigi(self, value):
+        self.__luigi = value
+    @property
+    def truck(self):
+        return self.__truck
+    @truck.setter
+    def truck(self, value):
+        self.__truck = value
+
+    # Methods
     def mario_row0(self):
         """Special function for row0, as it acts differently to the rest on
         the conveyors"""

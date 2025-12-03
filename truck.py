@@ -24,18 +24,76 @@ class Truck:
 
     def __init__(self):
         #Truck´s coordinates
-        self.x= 9
-        self.y= 88
+        self.__x= 9
+        self.__y= 88
         #Connection with the characters
-        self.package= []
-        self.has_package = False
+        self.__package= []
+        self.__has_package = False
         #Attributes needed to fill the truck
-        self.current_load= 0
-        self.max_capacity= 8
-        self.leave= False
-        self.full= False
+        self.__current_load= 0
+        self.__max_capacity= 8
+        self.__leave= False
+        self.__full= False
         #Attribute needed to animate the truck´s smoke
-        self.smoke_timer= 0
+        self.__smoke_timer= 0
+
+    # Coordinates
+    @property
+    def x(self):
+        return self.__x
+    @x.setter
+    def x(self, value):
+        if isinstance(value, (int, float)): self.__x = value
+    @property
+    def y(self): return self.__y
+    @y.setter
+    def y(self, value):
+        if isinstance(value, (int, float)): self.__y = value
+
+    # Capacity and load
+    @property
+    def max_capacity(self):
+        return self.__max_capacity
+    @max_capacity.setter
+    def max_capacity(self, value):
+        if isinstance(value, (int, float)):
+            self.__max_capacity = value
+    @property
+    def current_load(self):
+        return self.__current_load
+    @current_load.setter
+    def current_load(self, value):
+        if isinstance(value, (int, float)):
+            self.__current_load = value
+    # State Flags/References
+    @property
+    def full(self):
+        return self.__full
+    @full.setter
+    def full(self, value):
+        if isinstance(value, bool):
+            self.__full = value
+    @property
+    def smoke_timer(self):
+        return self.__smoke_timer
+    @smoke_timer.setter
+    def smoke_timer(self, value):
+        if isinstance(value, int):
+            self.__smoke_timer = value
+    @property
+    def package(self):
+        return self.__package
+    @package.setter
+    def package(self, value):
+        if isinstance(value, list):
+            self.__package = value
+    @property
+    def has_package(self):
+        return self.__has_package
+    @has_package.setter
+    def has_package(self, value):
+        if isinstance(value, bool):
+            self.__has_package = value
 
     def load_package(self,new_count):
         """This method sets a maximum number of possible packages into the

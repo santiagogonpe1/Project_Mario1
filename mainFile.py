@@ -1,8 +1,6 @@
 #To open the sprites: pyxel edit assets/sprites2.pyxres
 
-# Juntar codigo y dejar juego listo
 # Revisar score de luigi
-# Privado y publico de Luigi, Mario, Package, Truck
 # Documentacion
 
 import pyxel

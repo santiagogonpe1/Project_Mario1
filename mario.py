@@ -9,21 +9,84 @@ class Mario:
 
     def __init__(self):
         #Mario´s coordinates
-        self.x = 152
-        self.y = 127
+        self.__x = 152
+        self.__y = 127
         #Attribute needed for Mario to follow the packages behavior
-        self.package = []
+        self.__package = []
         #Attribute needed for Mario to follow the boss behavior
-        self.boss = None
+        self.__boss = None
         #Attribute needed for Mario to freeze
-        self.frozen = False
+        self.__frozen = False
         #Attributes needed for Mario to know when a package is caught and in
         #which row
-        self.catch= False
-        self.catch_row= None
+        self.__catch= False
+        self.__catch_row= None
         #Attribute needed for Mario to follow the truck behavior
-        self.truck= None
+        self.__truck= None
 
+    # Properties and setters of coordinates
+    @property
+    def x(self):
+        return self.__x
+    @x.setter
+    def x(self, value):
+        if isinstance(value, (int, float)):
+            self.__x = value
+    @property
+    def y(self):
+        return self.__y
+    @y.setter
+    def y(self, value):
+        if isinstance(value, (int, float)):
+            self.__y = value
+    # Frozen state
+    @property
+    def frozen(self):
+        return self.__frozen
+    @frozen.setter
+    def frozen(self, value):
+        if not isinstance(value, bool):
+            raise ValueError('Frozen value must be bool')
+        else:
+            self.__frozen = value
+
+    # Catching packages property and setter
+    @property
+    def catch(self):
+        return self.__catch
+    @catch.setter
+    def catch(self, value):
+        if isinstance(value, bool):
+            self.__catch = value
+    @property
+    def catch_row(self):
+        return self.__catch_row
+    @catch_row.setter
+    def catch_row(self, value):
+        if isinstance(value, int) or value is None:
+            self.__catch_row = value
+
+    #References to other classes
+    @property
+    def package(self):
+        return self.__package
+    @package.setter
+    def package(self, value):
+        if isinstance(value, list):
+            self.__package = value
+    @property
+    def boss(self):
+        return self.__boss
+    @boss.setter
+    def boss(self, value):
+        self.__boss = value
+    @property
+    def truck(self):
+        return self.__truck
+    @truck.setter
+    def truck(self, value):
+        self.__truck = value
+    # Methods
     def catch_package(self):
         """Returns True when a package is caught and its row"""
         caught = False
