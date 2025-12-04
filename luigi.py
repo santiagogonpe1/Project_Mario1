@@ -127,7 +127,6 @@ class Luigi:
         if self.boss and self.boss.boss_luigi and self.boss.animation_running:
             pyxel.blt(26, 124, Luigi.img, 16, 128,Luigi.luigi_width,
                       Luigi.luigi_height )
-
         if self.truck.full:
             pyxel.blt(self.x, self.y,
                       Luigi.img, Luigi.u, 144,

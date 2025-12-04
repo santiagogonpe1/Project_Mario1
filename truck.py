@@ -100,10 +100,6 @@ class Truck:
         truck and a counter for each one of them"""
         self.current_load = min(new_count, self.max_capacity)
 
-    #def leave_truck(self):
-        #if self.current_load == 8:
-           #self.leave= True
-
     def update(self):
         #If it was not full but now it is
         if not self.full and self.current_load >= self.max_capacity:

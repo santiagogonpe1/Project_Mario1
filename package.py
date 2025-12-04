@@ -6,7 +6,6 @@ class Package:
     v= 5
     package_width= 11
     package_height= 6
-    falling= False
     row_y = [130, 112, 96, 80, 64]
     max_x = [68, 148, 68, 148, 68]
     character = ["luigi", "mario", "luigi", "mario", "luigi"]

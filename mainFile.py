@@ -1,7 +1,5 @@
 #To open the sprites: pyxel edit assets/sprites2.pyxres
 
-# Revisar score de luigi
-# Documentacion
 
 import pyxel
 
@@ -163,9 +161,10 @@ class App:
         # Draw of game over
         if self.game_over:
             pyxel.cls(5)
-            pyxel.text(90, 60, "GAME OVER", 7)
-            pyxel.text(80, 90, "R - RESTART", 7)
-            pyxel.text(85, 105, "Q - QUIT", 7)
+            pyxel.text(90, 40, "GAME OVER", 7)
+            pyxel.text(81, 65, f"Final score: {self.score.points}", 7)
+            pyxel.text(85, 90, "R - RESTART", 7)
+            pyxel.text(90, 105, "Q - QUIT", 7)
             return
         self.mario.draw()
         self.luigi.draw()
@@ -179,7 +178,7 @@ class App:
         self.score.draw()
 
     def reset_game(self):
-        """This function resets the game if user press SPACE"""
+        """This function resets the game if user press R"""
         self.last_fail = False
         self.game_over = False
         self.lives_lost = 0
