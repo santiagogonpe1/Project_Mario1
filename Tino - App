@@ -147,9 +147,9 @@ class App:
             pyxel.cls(5)
             pyxel.text(80, 30, "SUPER MARIO BROS", 7)
             if (pyxel.frame_count // 8) % 2 == 0:
-                pyxel.text(75, 45, "Press return to start", 7)
+                pyxel.text(75, 45, "Press enter to start", 7)
             else:
-                pyxel.text(75, 45, "Press return to start", 5)
+                pyxel.text(75, 45, "Press enter to start", 5)
             pyxel.text(20, 85, "Luigi:", 7)
             pyxel.text(20, 95, "W -> UP", 7)
             pyxel.text(20, 105, "S -> DOWN", 7)
@@ -219,8 +219,9 @@ class App:
         self.batch_count = 0
         self.package.clear()
         self.boss.end_animation()
-        self.truck.full = False
-        self.truck.current_load = 0
+        if self.truck.full:
+            self.truck.full = False
+            self.truck.current_load = 0
 
     def freeze_truck(self):
         """ This method will help us to then freeze the game when the truck is
