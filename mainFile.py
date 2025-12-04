@@ -57,6 +57,8 @@ class App:
         pyxel.run(self.update, self.draw)
 
     def update(self):
+        """Develops different actions, multiple packages, fps count and
+        initializes or finishes game"""
         if pyxel.btnp(pyxel.KEY_Q):
             pyxel.quit()
         #Start game update in game
@@ -139,6 +141,7 @@ class App:
         self.score.update()
 
     def draw(self):
+        """Draws the initial and final interfaces, and the game itself"""
         pyxel.cls(0)
         pyxel.bltm(0,0,0,0,0,240,160)
 
