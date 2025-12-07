@@ -57,6 +57,8 @@ class App:
         pyxel.run(self.update, self.draw)
 
     def update(self):
+        """Develops different actions, multiple packages, fps count and
+        initializes or finishes game"""
         if pyxel.btnp(pyxel.KEY_Q):
             pyxel.quit()
         #Start game update in game
@@ -139,6 +141,7 @@ class App:
         self.score.update()
 
     def draw(self):
+        """Draws the initial and final interfaces, and the game itself"""
         pyxel.cls(0)
         pyxel.bltm(0,0,0,0,0,240,160)
 
@@ -162,7 +165,7 @@ class App:
         if self.game_over:
             pyxel.cls(5)
             pyxel.text(90, 40, "GAME OVER", 7)
-            pyxel.text(81, 65, f"Final score: {self.score.points}", 7)
+            pyxel.text(81, 65, "Final score: " + str(self.score.points), 7)
             pyxel.text(85, 90, "R - RESTART", 7)
             pyxel.text(90, 105, "Q - QUIT", 7)
             return
@@ -184,6 +187,7 @@ class App:
         self.lives_lost = 0
         self.boss.packages_thrown = 0
         self.truck.current_load = 0
+        self.score.points = 0
         self.unfreeze_game()
 
     def spawn_package(self):
